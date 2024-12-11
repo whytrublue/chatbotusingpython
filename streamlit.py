@@ -1,4 +1,4 @@
-from ultility import model
+from ultility import gpt
 import streamlit as st
 from streamlit_chat import message as st_message
 
@@ -26,7 +26,7 @@ if prompt := st.chat_input("please type your question here?"):
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    reply = model.run(prompt)
+    reply = gpt.run(prompt)
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(reply)
