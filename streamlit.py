@@ -1,36 +1,35 @@
-from ultility import gpt
 import streamlit as st
+from gpt import run as gpt_run  # OpenAI GPT
+from model import run as dialogpt_run  # DialoGPT
 from streamlit_chat import message as st_message
-
-
-# text = st.chat_input('please type your question here')
-# if text:
-#     reply = model.run(text)
-#     st_message(reply)
-
 
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat messages from history on app rerun
+# Display chat messages from history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-
-if prompt := st.chat_input("please type your question here?"):
-    # Display user message in chat message container
+# User input section
+if prompt := st.chat_input("Type your message here..."):
+    # Display user message
     with st.chat_message("user"):
         st.markdown(prompt)
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
 
-    reply = gpt.run(prompt)
-    # Display assistant response in chat message container
+    # Choose the model (GPT-3.5-turbo or DialoGPT)
+    model_type = st.selectbox("Choose Model", ["GPT-3.5", "DialoGPT"])
+    
+    if model_type == "GPT-3.5":
+        reply = gpt_run(prompt)  # Uses OpenAI API
+    else:
+        reply = dialogpt_run(prompt)  # Uses DialoGPT model
+
+    # Display assistant response
     with st.chat_message("assistant"):
         st.markdown(reply)
-    # Add assistant response to chat history
+
+    # Save to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
     st.session_state.messages.append({"role": "assistant", "content": reply})
-
-
